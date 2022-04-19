@@ -4,17 +4,24 @@ namespace SpotifyHelper;
 
 public class Downloader
 {
-    private static string tmp = Path.GetTempPath();
+    private string workinDir;
+    private string url;
 
-    public string downloadFromUrl(string videoUrl, string fileName)
+    public Downloader(string workinDir, string url)
     {
-        fileName += ".mp4";
-        
+        this.workinDir = workinDir;
+        this.url = url;
+    }
+
+    public string Download()
+    {
         var youtube = YouTube.Default;
-        var vid = youtube.GetVideo(videoUrl);
+        var vid = youtube.GetVideo(url);
 
-        File.WriteAllBytes(tmp + fileName, vid.GetBytes());
+        Console.WriteLine("Downloading from youtube...");
 
-        return tmp + fileName;
+        File.WriteAllBytes(workinDir + vid.Title + ".mp4", vid.GetBytes());
+
+        return vid.Title;
     }
 }

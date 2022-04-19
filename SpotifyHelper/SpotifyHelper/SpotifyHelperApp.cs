@@ -1,29 +1,74 @@
-﻿namespace SpotifyHelper
+﻿using System.Configuration;
+using System.Runtime.InteropServices;
+
+namespace SpotifyHelper
 {
     class SpotifyHelperApp
     {
-        private static string fileName = $@"{Guid.NewGuid()}";
-        
+        public static string? ffmpegExeLocation = ConfigurationManager.AppSettings.Get("FFMPEGExeLocation");
+        private static string workinDir = Path.GetTempPath();
+        private static string destinationDir;
+        private static string fileName;
         public static void Main(string[] args)
         {
-            string video_path = downloadFromUrl("https://www.youtube.com/watch?v=hVqrW-fPOQ0");
-            string audio_path = convertFromPath(video_path);
+            Run();
+        }
+
+        public static void Run()
+        {
+            Console.Write("Enter YouTube link:");
+            string url = Console.ReadLine();
+
+            ValidateAppConfig();
+
+            Downloader downloader = new Downloader(workinDir, url);
+            fileName = downloader.Download();
+
+            Converter converter = new Converter(workinDir, fileName);
+            converter.Convert();
             
-            Console.WriteLine(audio_path);
+            Thumbnail thumbnail = new Thumbnail(workinDir, url, fileName);
+            thumbnail.Download();
+            thumbnail.AddThumbnail();
+
+            MoveSong();
+
+            Console.Write("Download & Convert again? (y/N)");
+            string restart = Console.ReadLine();
+            
+            if (restart == "y")
+            {
+                Run();
+            } else {
+                Environment.Exit(1);
+            }
         }
 
-        public static string downloadFromUrl(string url)
+        private static void ValidateAppConfig()
         {
-            Downloader _downloader = new Downloader();
-            return _downloader.downloadFromUrl(url, fileName);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                destinationDir = ConfigurationManager.AppSettings.Get("DestinationDirPathLinux");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                destinationDir = ConfigurationManager.AppSettings.Get("DestinationDirPathWindows");
+            }
+
+            if (!Directory.Exists(destinationDir))
+            {
+                Console.WriteLine("Please configure your path," + destinationDir + " is not correct.");
+                Environment.Exit(1);
+            }
         }
 
-        public static string convertFromPath(string videoPath)
+        private static void MoveSong()
         {
-            Converter _converter = new Converter();
-            _converter.convertFromPath(videoPath, fileName);
+            Console.Write("Moving file...");
 
-            return "";
+            File.Move(workinDir + fileName + "_processed.mp3", destinationDir + fileName + ".mp3");
+            
+            Console.WriteLine("Moved file to destination folder. Exiting.");
         }
     }
 }
