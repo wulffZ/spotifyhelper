@@ -20,8 +20,6 @@ Linux: http://sharefiles.tk/guest/cTilK
  
 
 ## Installation and how to use.
-
-Installation
 1. Download the zip for your OS and extract into desired folder (including the App.config!).
 2. Configure App.config
 3. Run the executeable and pray.
@@ -31,7 +29,7 @@ Thats it!
 ## Configuring App.config
 1. Open in your favorite text editor
 2. Under the key FFMPEGExeLocation paste the **absolute** path to your ffmpeg executeable. By default the application will assume ffmpeg is in your PATH.
-3. Under the key DestinationDirPathLinux or Windows paste the absolute path to the folder you want the final product to be placed into.
+3. Under the key DestinationDirPathLinux or Windows paste the **absolute** path to the folder you want the final product to be placed into.
 
 ## Built With
 
