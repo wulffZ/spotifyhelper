@@ -15,8 +15,8 @@ public class Downloader
 
     public string Download()
     {
-        var youtube = YouTube.Default;
-        var vid = youtube.GetVideo(url);
+        YouTube youtube = YouTube.Default;
+        YouTubeVideo? vid = youtube.GetVideo(url);
 
         Console.WriteLine("Downloading from youtube...");
 

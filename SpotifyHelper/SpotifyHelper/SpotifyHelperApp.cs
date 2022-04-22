@@ -16,8 +16,7 @@ namespace SpotifyHelper
 
         public static void Run()
         {
-            Console.Write("Enter YouTube link:");
-            string url = Console.ReadLine();
+            string url = AskUrl();
 
             ValidateAppConfig();
 
@@ -42,6 +41,19 @@ namespace SpotifyHelper
             } else {
                 Environment.Exit(1);
             }
+        }
+
+        private static string AskUrl()
+        {
+            Console.Write("Enter YouTube link:");
+            string? url = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(url))
+            {
+                return AskUrl();
+            }
+
+            return url;
         }
 
         private static void ValidateAppConfig()

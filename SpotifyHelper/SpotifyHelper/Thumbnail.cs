@@ -21,18 +21,15 @@ public class Thumbnail
     
     public void Download()
     {
-        using (WebClient client = new WebClient()) 
+        using WebClient client = new WebClient();
+        try
         {
-            try
-            {
-                client.DownloadFile(new Uri(url), workingDir + fileName + ".jpg");
-            }
-            catch (WebException)
-            {
-                this.url = $"https://i.ytimg.com/vi/{watchCode}/hqdefault.jpg";
-                client.DownloadFile(new Uri(url), workingDir + fileName + ".jpg");
-            }
-            
+            client.DownloadFile(new Uri(url), workingDir + fileName + ".jpg");
+        }
+        catch (WebException)
+        {
+            this.url = $"https://i.ytimg.com/vi/{watchCode}/hqdefault.jpg";
+            client.DownloadFile(new Uri(url), workingDir + fileName + ".jpg");
         }
     }
 
